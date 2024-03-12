@@ -19,16 +19,18 @@ class UserController extends Controller
      */
     public function createUser(Request $request)
     {
+
+
         try {
             //Validated
             $validateUser = Validator::make($request->all(),
             [
-                'avatar' => 'required',
+                //'avatar' => 'required',
                 'type' => 'required',
                 'open_id' => 'required',
                 'name' => 'required',
                 'email' => 'required',
-                'password' => 'required|min:6',
+                //'password' => 'required|min:6',
             ]);
 
             if($validateUser->fails()){
@@ -48,23 +50,29 @@ class UserController extends Controller
             $map['open_id'] = $validated['open_id'];
             $user = User::where($map)->first();
 
+
             //wheter user has already Logged in or not
             //empty means doesn't exist
             //then save the user in the database for the first time
             if(empty($user->id)){
 
+
                 //this certain user has never been in our database
                 //our job is assign the user in the database
                 //this token is usesr_id
                 $validated["token"] = md5(uniqid().rand(10000, 99999));
+
                 //user first time created
                 $validated['created_at'] = Carbon::now();
+
                 //encript password
-                $validated['password'] = Hash::make($validated['password']);
+                //$validated['password'] = Hash::make($validated['password']);
                 //returns the ID of the row
                 $userID = User::insertGetId($validated);
+
                 //user's all the information
                 $userInfo = User::where('id', '=', $userID)->first();
+
                 //
                 $accessToken = $userInfo->createToken(uniqid())->plainTextToken;
                 $accessToken->access_token = $accessToken;
