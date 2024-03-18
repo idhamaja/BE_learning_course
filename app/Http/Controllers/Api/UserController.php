@@ -37,7 +37,7 @@ class UserController extends Controller
             if($validateUser->fails()){
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'msg' => 'validation error',
                     'errors' => $validateUser->errors()
                 ], 401);
             }
@@ -51,16 +51,17 @@ class UserController extends Controller
             $map['open_id'] = $validated['open_id'];
 
             $user = User::where($map)->first();
-            return response()->json([
-                'status' => true,
-                'data' => $user,
-                'message' => 'passed validaton',
-            ]);
+
 
             //whether user has already logged in or not
             //empty means does not exist
             //then save the user in the databae for first time
             if(empty($user->id)){
+                return response()->json([
+                    'status' => true,
+                    'data' => $validated,
+                    'msg' => 'passed validaton',
+                ]);
 
                 //this certain user has never been in our database
                 //our job is to assign the user in the datbase
@@ -68,6 +69,11 @@ class UserController extends Controller
                 $validated["token"] = md5(uniqid().rand(10000, 99999));
                 //user first time created
                 $validated['created_at'] = Carbon::now();
+                // return response()->json([
+                //     'status' => true,
+                //     'data' => $validated,
+                //     'message' => 'passed validaton',
+                // ]);
 
                 //encript password
                // $validated['password'] = Hash::make($validated['password']);
@@ -92,9 +98,9 @@ class UserController extends Controller
             $user->access_token = $accessToken;
             User::where('open_id','=', $validated['open_id'])->update(['access_token'=>$accessToken]);
             return response()->json([
-                    'code' => 200,
-                    'msg' => 'User logged Successfully',
-                    'data' => $user
+                'code' => 200,
+                'msg' => 'User Logged in Successfully',
+                'data' => $user
             ], 200);
 
         } catch (\Throwable $th) {
