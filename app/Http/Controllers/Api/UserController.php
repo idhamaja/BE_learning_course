@@ -19,9 +19,6 @@ class UserController extends Controller
      */
     public function createUser(Request $request)
     {
-
-
-
         try {
             //Validated
             $validateUser = Validator::make($request->all(),
@@ -51,17 +48,10 @@ class UserController extends Controller
             $map['open_id'] = $validated['open_id'];
 
             $user = User::where($map)->first();
-
-
             //whether user has already logged in or not
             //empty means does not exist
             //then save the user in the databae for first time
             if(empty($user->id)){
-                return response()->json([
-                    'status' => true,
-                    'data' => $validated,
-                    'msg' => 'passed validaton',
-                ]);
 
                 //this certain user has never been in our database
                 //our job is to assign the user in the datbase
