@@ -1,5 +1,8 @@
 <?php
 
+use App\Admin\Controllers\CourseTypeController;
+use App\Admin\Controllers\UserController;
+use Encore\Admin\Facades\Admin;
 use Illuminate\Routing\Router;
 
 Admin::routes();
@@ -12,5 +15,7 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index')->name('home');
+    $router->resource('/users', UserController::class);
+    $router->resource('/course-types', CourseTypeController::class);
 
 });
